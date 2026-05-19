@@ -1,0 +1,13 @@
+include:
+  - path: ./infra.yaml
+services:
+  goweb:
+    build: .
+    ports:
+      - "${APP_PORT}:8181"
+    environment:
+      - PGRS_HOST=${PGRS_HOST}
+      - PGRS_PORT=${PGRS_PORT}
+    depends_on:
+      postgres:
+        condition: service_healthy
