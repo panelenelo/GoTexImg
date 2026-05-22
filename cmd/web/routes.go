@@ -11,6 +11,7 @@ func (app *application) routes() *http.ServeMux {
 	mux.Handle("GET /static/", http.StripPrefix("/static", fileServer))
 
 	mux.HandleFunc("GET /testpage", app.getTestPage)
+	mux.HandleFunc("GET /teststatic", app.getTestStatic)
 
 	return mux
 }

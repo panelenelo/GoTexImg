@@ -1,0 +1,14 @@
+services:
+  imageserver:
+    image: nginx:alpine
+    ports:
+      - 127.0.0.1:8787:80
+    working_dir: /app
+    volumes:
+      - ./ui/static/img/userimgs/:/usr/share/nginx/html
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://goweb:8181/"]
+    #   interval: 10s
+    #   timeout: 3s
+    #   retries: 5
+    #   start_period: 10s

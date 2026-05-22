@@ -5,12 +5,14 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 const port string = ":8181"
 
 type application struct {
 	PageContent PageContent
+	Client      http.Client
 }
 
 func main() {
@@ -19,6 +21,7 @@ func main() {
 
 	app := &application{
 		PageContent: PageContent{},
+		Client:      http.Client{Timeout: 5 * time.Second},
 	}
 
 	log.Printf("Server starting on localhost%s", port)
