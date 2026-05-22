@@ -1,3 +1,4 @@
 appx
 .env
 migrate
+./ui/static/img/userimgs

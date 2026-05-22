@@ -1,5 +1,6 @@
 include:
   - path: ./infra.yaml
+  - path: ./imgsrv.yaml
 services:
   goweb:
     build: .
