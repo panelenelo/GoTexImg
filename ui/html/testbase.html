@@ -9,7 +9,15 @@
         <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon">
     </head>
     <body>
-        
+        <header>
+            <h1><a href="/">Share Texts and images</a></h1>
+        </header>
+        {{template "nav" .}}
+        <main>
+            {{template "main" .}}
+        </main>
+        {{template "footer" .}}        
         <script src="/static/js/testbase.js" type="text/javascript"></script>
     </body>
 </html>
+{{end}}

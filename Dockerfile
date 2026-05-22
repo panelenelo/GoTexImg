@@ -5,6 +5,8 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -o appx ./cmd/web/.
 
 FROM scratch
+# Necessary so the container has access to the static and html files
+COPY --from=builder /app/ui /ui
 COPY --from=builder /app/appx /appx
 EXPOSE 8181
 ENTRYPOINT ["/appx"]

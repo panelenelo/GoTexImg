@@ -2,13 +2,13 @@ package models
 
 import "time"
 
-type ImagesBt struct {
-	ID      int64
-	Title   string
-	Content []byte
-	Created time.Time
-	TextID  int64
-}
+// type ImagesBt struct {
+// 	ID      int64
+// 	Title   string
+// 	Content []byte
+// 	Created time.Time
+// 	TextID  int64
+// }
 
 type ImagesRef struct {
 	ID      int64

@@ -1,0 +1,20 @@
+{{define "title"}}Test Page{{end}}
+
+{{define "main"}}
+    <h2>First page</h2>
+    {{if .Text.ID}}
+    <div class="metadata">
+        <strong>{{.Text.Title}}</strong>
+        <span>#{{.Text.ID}}</span>
+    </div>
+    {{if .ImagesRef.ID}}
+    <div class="image">
+        <strong>{{.ImagesRef.Title}}</strong>
+        <img src="{{.ImagesRef.Content}}" alt="{{.Text.Title}} - image">
+    </div>
+    {{end}}
+    <pre><code>{{.Text.Content}}</code></pre>
+    {{else}}
+    <p>Nothing on the test page yet.</p>
+    {{end}}
+{{end}}

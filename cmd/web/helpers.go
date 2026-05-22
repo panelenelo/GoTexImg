@@ -1,0 +1,35 @@
+package main
+
+import (
+	"bytes"
+	"html/template"
+	"log"
+	"net/http"
+)
+
+func (app *application) render(w http.ResponseWriter, r *http.Request, status int, page string, data PageContent) {
+
+}
+func (app *application) renderTest(w http.ResponseWriter, r *http.Request, status int, files []string, data PageContent) {
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		log.Print(err.Error())
+		// http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	buff := new(bytes.Buffer)
+	err = ts.ExecuteTemplate(buff, "testbase", data)
+	if err != nil {
+		log.Print(err.Error())
+		// http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	w.WriteHeader(status)
+
+	buff.WriteTo(w)
+
+}
