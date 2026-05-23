@@ -1,6 +1,7 @@
 package main
 
 import (
+	"GoTexImg/internal/models"
 	"flag"
 	"log"
 	"net/http"
@@ -12,7 +13,8 @@ const port string = ":8181"
 
 type application struct {
 	PageContent PageContent
-	Client      http.Client
+	Client      *http.Client
+	DB          models.TeximgModel
 }
 
 func main() {
@@ -21,7 +23,7 @@ func main() {
 
 	app := &application{
 		PageContent: PageContent{},
-		Client:      http.Client{Timeout: 5 * time.Second},
+		Client:      &http.Client{Timeout: 5 * time.Second},
 	}
 
 	log.Printf("Server starting on localhost%s", port)

@@ -27,12 +27,15 @@ func (app *application) getTestStatic(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.Write([]byte(err.Error()))
 		log.Print(err.Error())
+		return //Return because if resp is nil resp.Body.Close() will panic
 	}
 
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		w.Write([]byte("Status code not OK"))
+		log.Print("resp status code not OK")
+		return
 	}
 
 	w.Header().Set("Content-Type", "image/jpeg")
