@@ -16,9 +16,8 @@ import (
 const port string = ":8181"
 
 type application struct {
-	PageContent PageContent
-	Client      *http.Client
-	DB          *models.TeximgModel
+	Client *http.Client
+	TModel *models.TeximgModel
 }
 
 func main() {
@@ -38,9 +37,8 @@ func main() {
 	}
 
 	app := &application{
-		PageContent: PageContent{},
-		Client:      &http.Client{Timeout: 5 * time.Second},
-		DB:          &models.TeximgModel{DB: db},
+		Client: &http.Client{Timeout: 5 * time.Second},
+		TModel: &models.TeximgModel{DB: db},
 	}
 
 	log.Printf("Server starting on localhost%s", port)

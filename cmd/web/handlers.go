@@ -1,14 +1,35 @@
 package main
 
 import (
+	"database/sql"
+	"errors"
 	"io"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func (app *application) getTestPage(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil || id < 1 {
+		http.NotFound(w, r)
+		return
+	}
 
-	data := app.PageContent
+	// snippet, err := app.snippets.Get(id)
+	text, err := app.TModel.GetTex(id)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			http.NotFound(w, r)
+		} else {
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			log.Printf("Internal Error: %s", err)
+		}
+		return
+	}
+
+	data := PageContent{}
+	data.Text = text
 
 	files := []string{
 		"./ui/html/testbase.html",

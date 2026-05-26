@@ -49,7 +49,7 @@ func (m *TeximgModel) GetTex(id int) (Text, error) {
 	case nil:
 		return t, nil
 	default:
-		panic(err)
+		return Text{}, err
 	}
 }
 
