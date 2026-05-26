@@ -1,9 +1,9 @@
 CREATE TABLE texts (
-id BIGSERIAL PRIMARY KEY,
-title TEXT NOT NULL,
-content TEXT NOT NULL,
-created TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-image_ref_id BIGINT
+    id BIGSERIAL PRIMARY KEY,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    created TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    image_ref_id BIGINT
 );
 
 CREATE TABLE images_ref (
