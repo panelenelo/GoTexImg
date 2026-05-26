@@ -9,6 +9,9 @@ services:
     environment:
       - PGRS_HOST=${PGRS_HOST}
       - PGRS_PORT=${PGRS_PORT}
+      - POSTGRES_DB=${PGRS_DB}
+      - POSTGRES_USER=${PGRS_USER}
+      - POSTGRES_PASSWORD=${PGRS_PASS}
     depends_on:
       postgres:
         condition: service_healthy
