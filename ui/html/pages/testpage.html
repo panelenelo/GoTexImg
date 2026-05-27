@@ -10,7 +10,8 @@
     {{if .ImagesRef.ID}}
     <div class="image">
         <strong>{{.ImagesRef.Title}}</strong>
-        <img src="{{.ImagesRef.Content}}" alt="{{.Text.Title}} - image">
+        <p>{{.ImagesRef.Content}}</p>
+        <img src="{{.ImagesRef.Content}}" alt="{{.Text.Title}} - image" style="width:500px;">
     </div>
     {{end}}
     <pre><code>{{.Text.Content}}</code></pre>
