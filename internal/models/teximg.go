@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"log"
 	"time"
 )
 
@@ -75,5 +76,30 @@ func (m *TeximgModel) GetImg(id int) (ImagesRef, error) {
 }
 
 func (m *TeximgModel) Latest() ([]Text, error) {
-	return nil, nil
+
+	sqlStmt := `SELECT id, title, content, created FROM texts
+		ORDER BY id DESC LIMIT 10`
+
+	texts := make([]Text, 0, 10)
+
+	rows, err := m.DB.Query(sqlStmt)
+	if err != nil {
+		log.Printf("Error querying DB in Latest Function: %s", err.Error())
+		return texts, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var t Text
+		err := rows.Scan(&t.ID, &t.Title, &t.Content, &t.Created)
+		if err != nil {
+			log.Printf("Error scanning DB retrieval in \"Latest\" Function: %s", err.Error())
+			return texts, err
+		}
+
+		texts = append(texts, t)
+	}
+
+	return texts, err
 }

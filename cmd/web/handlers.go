@@ -11,6 +11,28 @@ import (
 	"strings"
 )
 
+func (app *application) getHome(w http.ResponseWriter, r *http.Request) {
+
+	texts, err := app.TModel.Latest()
+	if err != nil {
+		log.Print(err)
+	}
+
+	data := PageContent{
+		Texts: texts,
+	}
+
+	files := []string{
+		"./ui/html/testbase.html",
+		"./ui/html/pages/home.html",
+		"./ui/html/partials/footer.html",
+		"./ui/html/partials/nav.html",
+	}
+
+	app.renderTest(w, r, http.StatusOK, files, data)
+
+}
+
 func (app *application) getTestPage(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.PathValue("id"))
 	if err != nil || id < 1 {

@@ -1,0 +1,23 @@
+{{define "title"}}Home Page{{end}}
+
+{{define "main"}}
+    <h2>Text Image</h2>
+    {{if .Texts}}
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Created</th>
+            <th>ID</th>
+        </tr>
+        {{range .Texts}}
+        <tr>
+            <td><a href="/texts/{{.ID}}">{{.Title}}</a></td>
+            <td>{{.Created}}</td>
+            <td>#{{.ID}}</td>
+        </tr>
+        {{end}}
+    </table>
+    {{else}}
+    <p>Nothing to see here yet.</p>
+    {{end}}
+{{end}}
