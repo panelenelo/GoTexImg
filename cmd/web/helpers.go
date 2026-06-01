@@ -8,7 +8,7 @@ import (
 )
 
 func (app *application) render(w http.ResponseWriter, r *http.Request, status int, files []string, data PageContent) {
-	ts, err := template.ParseFiles(files...)
+	ts, err := template.New("Tmplt").Funcs(tmpltFunctions).ParseFiles(files...)
 	if err != nil {
 		log.Print(err.Error())
 		// http.Error(w, "Internal Server Error", http.StatusInternalServerError)

@@ -15,6 +15,9 @@
     </div>
     {{end}}
     <pre><code>{{.Text.Content}}</code></pre>
+    <div class="metadata">
+            <time>Created: {{humanDate .Text.Created}}</time>
+    </div>
     {{else}}
     <p>Error. Text not found</p>
     {{end}}
