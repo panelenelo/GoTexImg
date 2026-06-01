@@ -1,0 +1,21 @@
+{{define "title"}}Text #{{.Text.ID}}{{end}}
+
+{{define "main"}}
+    {{if .Text.ID}}
+    <h2>{{.Text.Title}} #{{.Text.ID}}</h2>
+    <div class="metadata">
+        <strong>{{.Text.Title}}</strong>
+        <span>#{{.Text.ID}}</span>
+    </div>
+    {{if .ImagesRef.ID}}
+    <div class="image">
+        <strong>{{.ImagesRef.Title}}</strong>
+        <p>{{.ImagesRef.Content}}</p>
+        <img src="{{.ImagesRef.Content}}" alt="{{.Text.Title}} - image" style="width:500px;">
+    </div>
+    {{end}}
+    <pre><code>{{.Text.Content}}</code></pre>
+    {{else}}
+    <p>Error. Text not found</p>
+    {{end}}
+{{end}}

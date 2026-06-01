@@ -12,6 +12,7 @@ func (app *application) routes() *http.ServeMux {
 
 	mux.HandleFunc("GET /{$}", app.getHome)
 	mux.HandleFunc("GET /images/{img}", app.getImgProxy)
+	mux.HandleFunc("GET /texts/{id}", app.getTextView)
 	mux.HandleFunc("GET /testpage/{id}", app.getTestPage)
 	mux.HandleFunc("GET /teststatic", app.getTestStatic)
 

@@ -23,13 +23,58 @@ func (app *application) getHome(w http.ResponseWriter, r *http.Request) {
 	}
 
 	files := []string{
-		"./ui/html/testbase.html",
+		"./ui/html/base.html",
 		"./ui/html/pages/home.html",
 		"./ui/html/partials/footer.html",
 		"./ui/html/partials/nav.html",
 	}
 
-	app.renderTest(w, r, http.StatusOK, files, data)
+	app.render(w, r, http.StatusOK, files, data)
+
+}
+
+func (app *application) getTextView(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil || id < 1 {
+		http.NotFound(w, r)
+		return
+	}
+
+	text, err := app.TModel.GetTex(id)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			http.NotFound(w, r)
+		} else {
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			log.Printf("Internal Error: %v", err)
+		}
+		return
+	}
+
+	data := PageContent{
+		Text: text,
+	}
+
+	if text.ImageRefID != 0 {
+		img, err := app.TModel.GetImg(int(text.ImageRefID))
+		if err != nil {
+			log.Printf("%s", err)
+		} else {
+			parts := strings.Split(img.Content, "/")
+			filename := parts[len(parts)-1]
+			img.Content = "/images/" + filename
+			data.ImagesRef = img
+		}
+	}
+
+	files := []string{
+		"./ui/html/base.html",
+		"./ui/html/pages/view.html",
+		"./ui/html/partials/footer.html",
+		"./ui/html/partials/nav.html",
+	}
+
+	app.render(w, r, http.StatusOK, files, data)
 
 }
 

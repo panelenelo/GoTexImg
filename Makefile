@@ -12,3 +12,7 @@ build: vet
 
 clean:
 	go clean
+
+reset:
+	./reset.sh
+
