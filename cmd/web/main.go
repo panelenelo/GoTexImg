@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"time"
@@ -16,6 +17,7 @@ import (
 const port string = ":8181"
 
 type application struct {
+	Logger *slog.Logger
 	Client *http.Client
 	TModel *models.TeximgModel
 }
@@ -29,6 +31,8 @@ func main() {
 		log.Fatal(err)
 	}
 
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+
 	defer db.Close()
 
 	err = db.Ping()
@@ -39,6 +43,7 @@ func main() {
 	app := &application{
 		Client: &http.Client{Timeout: 5 * time.Second},
 		TModel: &models.TeximgModel{DB: db},
+		Logger: logger,
 	}
 
 	log.Printf("Server starting on localhost%s", port)

@@ -15,7 +15,9 @@ func (app *application) getHome(w http.ResponseWriter, r *http.Request) {
 
 	texts, err := app.TModel.Latest()
 	if err != nil {
-		log.Print(err)
+		app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
 	}
 
 	data := PageContent{
