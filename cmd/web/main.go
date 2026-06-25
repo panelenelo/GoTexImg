@@ -46,10 +46,10 @@ func main() {
 		Logger: logger,
 	}
 
-	log.Printf("Server starting on localhost%s", port)
+	app.Logger.Info("Server starting on localhost", "port", addr)
 	err = http.ListenAndServe(addr, app.routes())
 	if err != nil {
-		log.Print(err.Error())
+		app.Logger.Error(err.Error())
 	}
 	os.Exit(1)
 }

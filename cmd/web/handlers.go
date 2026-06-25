@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -48,7 +47,8 @@ func (app *application) getTextView(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 		} else {
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-			log.Printf("Internal Error: %v", err)
+			// log.Printf("Internal Error: %v", err)
+			app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
 		}
 		return
 	}
@@ -60,7 +60,8 @@ func (app *application) getTextView(w http.ResponseWriter, r *http.Request) {
 	if text.ImageRefID != 0 {
 		img, err := app.TModel.GetImg(int(text.ImageRefID))
 		if err != nil {
-			log.Printf("%s", err)
+			// log.Printf("%s", err)
+			app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI(), "function", "GetImg")
 		} else {
 			parts := strings.Split(img.Content, "/")
 			filename := parts[len(parts)-1]
@@ -93,7 +94,8 @@ func (app *application) getTestPage(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 		} else {
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-			log.Printf("Internal Error: %v", err)
+			// log.Printf("Internal Error: %v", err)
+			app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
 		}
 		return
 	}
@@ -105,7 +107,8 @@ func (app *application) getTestPage(w http.ResponseWriter, r *http.Request) {
 	if text.ImageRefID != 0 {
 		img, err := app.TModel.GetImg(int(text.ImageRefID))
 		if err != nil {
-			log.Printf("%s", err)
+			// log.Printf("%s", err)
+			app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI(), "function", "GetImg")
 		} else {
 			parts := strings.Split(img.Content, "/")
 			filename := parts[len(parts)-1]
@@ -130,7 +133,7 @@ func (app *application) getTestStatic(w http.ResponseWriter, r *http.Request) {
 	resp, err := app.Client.Get(img)
 	if err != nil {
 		w.Write([]byte(err.Error()))
-		log.Print(err.Error())
+		app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
 		return //Return because if resp is nil resp.Body.Close() will panic
 	}
 
@@ -138,7 +141,8 @@ func (app *application) getTestStatic(w http.ResponseWriter, r *http.Request) {
 
 	if resp.StatusCode != http.StatusOK {
 		w.Write([]byte("Status code not OK"))
-		log.Print("resp status code not OK")
+		// log.Print("resp status code not OK")
+		app.Logger.Error("resp status code not OK", "method", r.Method, "uri", r.URL.RequestURI())
 		return
 	}
 
@@ -147,6 +151,7 @@ func (app *application) getTestStatic(w http.ResponseWriter, r *http.Request) {
 
 	_, err = io.Copy(w, resp.Body)
 	if err != nil {
+		app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI(), "function", "io.Copy")
 		return
 	}
 }
@@ -154,21 +159,24 @@ func (app *application) getTestStatic(w http.ResponseWriter, r *http.Request) {
 func (app *application) getImgProxy(w http.ResponseWriter, r *http.Request) {
 	url := r.PathValue("img")
 	if url == "" {
-		log.Printf("Path empty, no image referenced")
+		// log.Printf("Path empty, no image referenced")
+		app.Logger.Error("Path empty, no image referenced", "method", r.Method, "uri", r.URL.RequestURI())
 		return
 	}
 
 	internalURL := fmt.Sprintf("http://imageserver:80/%s", url)
 	resp, err := app.Client.Get(internalURL)
 	if err != nil {
-		log.Printf("Error getting image: %s", err.Error())
+		// log.Printf("Error getting image: %s", err.Error())
+		app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
 		return
 	}
 
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		log.Printf("Image not found")
+		resp := fmt.Sprintf("Client.Get(%s)", url)
+		app.Logger.Error("Status code not OK", "method", r.Method, "uri", r.URL.RequestURI(), "function", resp)
 		return
 	}
 
@@ -179,7 +187,8 @@ func (app *application) getImgProxy(w http.ResponseWriter, r *http.Request) {
 
 	_, err = io.Copy(w, resp.Body)
 	if err != nil {
-		log.Printf("Error copying image to response: %v", err)
+		// log.Printf("Error copying image to response: %v", err)
+		app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
 	}
 
 }
