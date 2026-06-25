@@ -14,8 +14,7 @@ func (app *application) getHome(w http.ResponseWriter, r *http.Request) {
 
 	texts, err := app.TModel.Latest()
 	if err != nil {
-		app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		app.serverError(w, r, err)
 		return
 	}
 
@@ -44,11 +43,10 @@ func (app *application) getTextView(w http.ResponseWriter, r *http.Request) {
 	text, err := app.TModel.GetTex(id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
+			app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
 			http.NotFound(w, r)
 		} else {
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-			// log.Printf("Internal Error: %v", err)
-			app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
+			app.serverError(w, r, err)
 		}
 		return
 	}
@@ -60,7 +58,8 @@ func (app *application) getTextView(w http.ResponseWriter, r *http.Request) {
 	if text.ImageRefID != 0 {
 		img, err := app.TModel.GetImg(int(text.ImageRefID))
 		if err != nil {
-			// log.Printf("%s", err)
+			// Not going to stop the program, just not rendering the image and logging.
+			//Maybe later should add this information to the user in some form of popup.
 			app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI(), "function", "GetImg")
 		} else {
 			parts := strings.Split(img.Content, "/")
@@ -93,9 +92,7 @@ func (app *application) getTestPage(w http.ResponseWriter, r *http.Request) {
 		if errors.Is(err, sql.ErrNoRows) {
 			http.NotFound(w, r)
 		} else {
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-			// log.Printf("Internal Error: %v", err)
-			app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
+			app.serverError(w, r, err)
 		}
 		return
 	}
@@ -107,7 +104,6 @@ func (app *application) getTestPage(w http.ResponseWriter, r *http.Request) {
 	if text.ImageRefID != 0 {
 		img, err := app.TModel.GetImg(int(text.ImageRefID))
 		if err != nil {
-			// log.Printf("%s", err)
 			app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI(), "function", "GetImg")
 		} else {
 			parts := strings.Split(img.Content, "/")
@@ -132,22 +128,19 @@ func (app *application) getTestStatic(w http.ResponseWriter, r *http.Request) {
 
 	resp, err := app.Client.Get(img)
 	if err != nil {
-		w.Write([]byte(err.Error()))
-		app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
+		app.serverError(w, r, err)
 		return //Return because if resp is nil resp.Body.Close() will panic
 	}
 
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		w.Write([]byte("Status code not OK"))
-		// log.Print("resp status code not OK")
 		app.Logger.Error("resp status code not OK", "method", r.Method, "uri", r.URL.RequestURI())
+		w.Write([]byte("Status code not OK"))
 		return
 	}
 
 	w.Header().Set("Content-Type", "image/jpeg")
-	// log.Printf("Type of resp: %T", resp.Body) is of type *http.cancelTimerBody
 
 	_, err = io.Copy(w, resp.Body)
 	if err != nil {
@@ -167,7 +160,6 @@ func (app *application) getImgProxy(w http.ResponseWriter, r *http.Request) {
 	internalURL := fmt.Sprintf("http://imageserver:80/%s", url)
 	resp, err := app.Client.Get(internalURL)
 	if err != nil {
-		// log.Printf("Error getting image: %s", err.Error())
 		app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
 		return
 	}
@@ -187,7 +179,6 @@ func (app *application) getImgProxy(w http.ResponseWriter, r *http.Request) {
 
 	_, err = io.Copy(w, resp.Body)
 	if err != nil {
-		// log.Printf("Error copying image to response: %v", err)
 		app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
 	}
 

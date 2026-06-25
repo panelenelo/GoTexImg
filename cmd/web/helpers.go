@@ -9,18 +9,18 @@ import (
 func (app *application) render(w http.ResponseWriter, r *http.Request, status int, files []string, data PageContent) {
 	ts, err := template.New("Tmplt").Funcs(tmpltFunctions).ParseFiles(files...)
 	if err != nil {
-		app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
-		// http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		app.serverError(w, r, err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		// w.Write([]byte(err.Error()))
 		return
 	}
 
 	buff := new(bytes.Buffer)
 	err = ts.ExecuteTemplate(buff, "base", data)
 	if err != nil {
-		app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
-		// http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		app.serverError(w, r, err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		// w.Write([]byte(err.Error()))
 		return
 	}
 
@@ -32,18 +32,14 @@ func (app *application) render(w http.ResponseWriter, r *http.Request, status in
 func (app *application) renderTest(w http.ResponseWriter, r *http.Request, status int, files []string, data PageContent) {
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
-		app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
-		// http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		app.serverError(w, r, err)
 		return
 	}
 
 	buff := new(bytes.Buffer)
 	err = ts.ExecuteTemplate(buff, "testbase", data)
 	if err != nil {
-		app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
-		// http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		app.serverError(w, r, err)
 		return
 	}
 
@@ -51,4 +47,13 @@ func (app *application) renderTest(w http.ResponseWriter, r *http.Request, statu
 
 	buff.WriteTo(w)
 
+}
+
+func (app *application) serverError(w http.ResponseWriter, r *http.Request, err error) {
+	app.Logger.Error(err.Error(), "method", r.Method, "uri", r.URL.RequestURI())
+	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+}
+
+func (app *application) clientError(w http.ResponseWriter, status int) {
+	http.Error(w, http.StatusText(status), status)
 }
