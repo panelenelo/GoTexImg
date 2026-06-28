@@ -1,6 +1,7 @@
 include:
   - path: ./postgres.yaml
   - path: ./imgsrv.yaml
+  - path: ./observability.yaml
 services:
   goweb:
     build: .
