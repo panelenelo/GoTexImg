@@ -1,11 +1,10 @@
 services:
   fluentbit:
-    image: fluent/fluent-bit:4.0
-    environment:
-      - FLB_CONFIG_FILE=/fluent-bit/etc/fluent-bit.yaml
+    image: fluent/fluent-bit:3.0
     volumes:
       - ./fluent-bit.yaml:/fluent-bit/etc/fluent-bit.yaml:ro
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    command: ["/fluent-bit/bin/fluent-bit", "-c", "/fluent-bit/etc/fluent-bit.yaml"]
     depends_on:
       - goweb

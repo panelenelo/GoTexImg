@@ -1,45 +1,25 @@
 service:
   flush: 1
-  daemon: off
   log_level: info
-
-custom_parsers:
-  - name: docker
-    format: json
-    time_key: time
-    time_format: "%Y-%m-%dT%H:%M:%S.%L"
-    time_keep: "on"
-
-  - name: json
-    format: json
-    time_key: time
-    time_format: "%Y-%m-%dT%H:%M:%S%z"
+  parsers_file: /fluent-bit/etc/parsers.conf
 
 pipeline:
   inputs:
     - name: tail
-      tag: docker.*
       path: /var/lib/docker/containers/*/*.log
+      tag: docker.*
       parser: docker
-      db: /fluent-bit/etc/fluent-bit.db
-      mem_buf_limit: 5MB
-      skip_long_lines: "on"
-      refresh_interval: 10
 
   filters:
-    # 1. Fetch Docker Container Metadata
-    - name: kubernetes
-      match: docker.*
-      use_kubelet: off
-      docker_mode: "on"
-
-    # 2. Unwrap your Go application's slog JSON
+    # - name: docker
+    #   match: docker.*
     - name: parser
       match: docker.*
       key_name: log
-      parser: json
       reserve_data: true
+      parser: json
 
   outputs:
     - name: stdout
       match: "*"
+
