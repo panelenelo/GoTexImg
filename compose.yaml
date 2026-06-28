@@ -1,5 +1,5 @@
 include:
-  - path: ./infra.yaml
+  - path: ./postgres.yaml
   - path: ./imgsrv.yaml
 services:
   goweb:
