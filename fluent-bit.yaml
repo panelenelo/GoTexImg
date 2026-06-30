@@ -11,8 +11,8 @@ pipeline:
       parser: docker
 
   filters:
-    # - name: docker
-    #   match: docker.*
+    - name: docker
+      match: docker.*
     - name: parser
       match: docker.*
       key_name: log
