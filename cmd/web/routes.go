@@ -15,6 +15,8 @@ func (app *application) routes() *http.ServeMux {
 	mux.HandleFunc("GET /texts/{id}", app.getTextView)
 	mux.HandleFunc("GET /testpage/{id}", app.getTestPage)
 	mux.HandleFunc("GET /teststatic", app.getTestStatic)
+	mux.HandleFunc("GET /create", app.getCreateText)
+	mux.HandleFunc("POST /create", app.postCreateText)
 
 	return mux
 }

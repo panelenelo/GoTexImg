@@ -183,3 +183,11 @@ func (app *application) getImgProxy(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+func (app *application) getCreateText(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func (app *application) postCreateText(w http.ResponseWriter, r *http.Request) {
+
+}
