@@ -185,7 +185,16 @@ func (app *application) getImgProxy(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) getCreateText(w http.ResponseWriter, r *http.Request) {
+	files := []string{
+		"./ui/html/base.html",
+		"./ui/html/pages/createText.html",
+		"./ui/html/partials/footer.html",
+		"./ui/html/partials/nav.html",
+	}
 
+	data := PageContent{}
+
+	app.render(w, r, http.StatusOK, files, data)
 }
 
 func (app *application) postCreateText(w http.ResponseWriter, r *http.Request) {
