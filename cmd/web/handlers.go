@@ -198,5 +198,20 @@ func (app *application) getCreateText(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) postCreateText(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
 
+	title := r.PostForm.Get("title")
+	content := r.PostForm.Get("content")
+
+	id, err := app.TModel.InsertTex(title, content)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	http.Redirect(w, r, fmt.Sprintf("/texts/%d", id), http.StatusSeeOther)
 }

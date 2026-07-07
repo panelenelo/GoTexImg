@@ -31,11 +31,18 @@ func (m *TeximgModel) InsertImg(title string, content string) (int, error) {
 }
 
 func (m *TeximgModel) InsertTex(title string, content string) (int, error) {
-	// row := db.QueryRow(`insert into users(name, age) values('Scrooge McDuck', 93) returning id`)
-	// var userid int
-	// err := row.Scan(&userid)
+	sqlStmt := `
+	INSERT INTO texts (title, content, created)
+	VALUES ($1, $2, NOW())
+	RETURNING id`
 
-	return 0, nil
+	var id int
+	err := m.DB.QueryRow(sqlStmt, title, content).Scan(&id)
+	if err != nil {
+		return 0, err
+	}
+
+	return int(id), nil
 }
 
 func (m *TeximgModel) GetTex(id int) (Text, error) {
