@@ -2,9 +2,9 @@
 
 {{define "main"}}
     {{if .Text.ID}}
-    <h2>{{.Text.Title}} #{{.Text.ID}}</h2>
+    <!-- <h2>{{.Text.Title}}</h2> -->
     <div class="metadata">
-        <strong>{{.Text.Title}}</strong>
+        <h2><strong>{{.Text.Title}}</strong></h2>
         <span>#{{.Text.ID}}</span>
     </div>
     {{if .ImagesRef.ID}}
